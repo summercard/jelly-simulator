@@ -1,0 +1,170 @@
+{
+  "engine": "BLENDER_EEVEE_NEXT",
+  "tests": [
+    {
+      "tilt_degrees": 0,
+      "hardness": 75,
+      "gravity": 1,
+      "equilibrium_q": [
+        0.0,
+        0.0,
+        -0.11118244017725677
+      ],
+      "gravity_down_tip_m": 0.11118245124816895,
+      "equilibrium_error": 2.4354216008465324e-06,
+      "anchor_matrix_error": 0.0,
+      "minimum_world_z": 2.200000047683716,
+      "peak_deformation": 0.18540043915270385
+    },
+    {
+      "tilt_degrees": 0,
+      "hardness": 30,
+      "gravity": 1,
+      "equilibrium_q": [
+        0.0,
+        0.0,
+        -0.2779557928177093
+      ],
+      "gravity_down_tip_m": 0.2779557704925537,
+      "equilibrium_error": 5.780928569509847e-06,
+      "anchor_matrix_error": 0.0,
+      "minimum_world_z": 2.200000047683716,
+      "peak_deformation": 0.42362564088492227
+    },
+    {
+      "tilt_degrees": 0,
+      "hardness": 16,
+      "gravity": 1,
+      "equilibrium_q": [
+        0.0,
+        0.0,
+        -0.47
+      ],
+      "gravity_down_tip_m": 0.4700000286102295,
+      "equilibrium_error": 0.0,
+      "anchor_matrix_error": 0.0,
+      "minimum_world_z": 2.200000047683716,
+      "peak_deformation": 0.47
+    },
+    {
+      "tilt_degrees": 90,
+      "hardness": 75,
+      "gravity": 1,
+      "equilibrium_q": [
+        0.0,
+        -0.2725129516570638,
+        6.9426564515260144e-09
+      ],
+      "gravity_down_tip_m": 0.27251294255256653,
+      "equilibrium_error": 1.2940001044348115e-05,
+      "anchor_matrix_error": 0.0,
+      "minimum_world_z": 1.1864753814575526,
+      "peak_deformation": 0.43385942001048355
+    },
+    {
+      "tilt_degrees": 90,
+      "hardness": 30,
+      "gravity": 1,
+      "equilibrium_q": [
+        0.0,
+        -0.6812311650956404,
+        1.7357055583480018e-08
+      ],
+      "gravity_down_tip_m": 0.6812311410903931,
+      "equilibrium_error": 1.8864044408095644e-05,
+      "anchor_matrix_error": 0.0,
+      "minimum_world_z": 0.950230096391697,
+      "peak_deformation": 0.9735115797436568
+    },
+    {
+      "tilt_degrees": 90,
+      "hardness": 16,
+      "gravity": 1,
+      "equilibrium_q": [
+        0.0,
+        -1.15,
+        3.254513724488931e-08
+      ],
+      "gravity_down_tip_m": 1.149999976158142,
+      "equilibrium_error": 1.6173659756222972e-12,
+      "anchor_matrix_error": 0.0,
+      "minimum_world_z": 0.5664658269508214,
+      "peak_deformation": 1.1500000000000006
+    },
+    {
+      "tilt_degrees": 180,
+      "hardness": 75,
+      "gravity": 1,
+      "equilibrium_q": [
+        0.0,
+        2.3823838613149234e-08,
+        0.15882946763264824
+      ],
+      "gravity_down_tip_m": 0.1588294506073019,
+      "equilibrium_error": 8.894102826458284e-07,
+      "anchor_matrix_error": 0.0,
+      "minimum_world_z": 1.041170597076414,
+      "peak_deformation": 0.2567311574482009
+    },
+    {
+      "tilt_degrees": 180,
+      "hardness": 30,
+      "gravity": 1,
+      "equilibrium_q": [
+        0.0,
+        5.9555119258734434e-08,
+        0.39708315069924816
+      ],
+      "gravity_down_tip_m": 0.3970831632614188,
+      "equilibrium_error": 1.1705143334150962e-05,
+      "anchor_matrix_error": 0.0,
+      "minimum_world_z": 0.8029168844222971,
+      "peak_deformation": 0.5792241847643712
+    },
+    {
+      "tilt_degrees": 180,
+      "hardness": 16,
+      "gravity": 1,
+      "equilibrium_q": [
+        0.0,
+        1.1166446050591751e-07,
+        0.744545961438298
+      ],
+      "gravity_down_tip_m": 0.7445459365844824,
+      "equilibrium_error": 3.7001020959160074e-05,
+      "anchor_matrix_error": 0.0,
+      "minimum_world_z": 0.4554541110992334,
+      "peak_deformation": 0.993026198272806
+    }
+  ],
+  "max_fixed_cut_world_error": 0,
+  "all_finite": true,
+  "zero_gravity_displacement": 0.0,
+  "gravity_multiplier_curve": [
+    {
+      "gravity": 0,
+      "sag": 0.0
+    },
+    {
+      "gravity": 0.5,
+      "sag": 0.34062501457002436
+    },
+    {
+      "gravity": 1,
+      "sag": 0.6812500291400487
+    },
+    {
+      "gravity": 1.5,
+      "sag": 1.0218750437100732
+    }
+  ],
+  "release_rebounds": true,
+  "release_final_error": 7.734128213368076e-06,
+  "shake": {
+    "peak_deviation": 0.6181900966381604,
+    "anchor_error": 0.0,
+    "residual_after_5s": 0.0013031257911329788
+  },
+  "softer_sags_more": true,
+  "passed": true
+}

@@ -1,0 +1,15 @@
+Traceback (most recent call last):
+  File "/Users/summercards/Library/Application Support/Blender/4.2/scripts/addons/addon.py", line 1244, in execute_code
+    exec(code, namespace)
+  File "<string>", line 4, in <module>
+NameError: name 'j' is not defined
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/summercards/Library/Application Support/Blender/4.2/scripts/addons/addon.py", line 696, in _execute_command_internal
+    result = handler(**params)
+             ^^^^^^^^^^^^^^^^^
+  File "/Users/summercards/Library/Application Support/Blender/4.2/scripts/addons/addon.py", line 1249, in execute_code
+    raise Exception(f"Code execution error: {str(e)}")
+Exception: Code execution error: name 'j' is not defined

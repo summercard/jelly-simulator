@@ -1,0 +1,21 @@
+{
+  "pressed_max_dent": 0.19491083920001984,
+  "fixed_cut_max_displacement": 0.0,
+  "affected_vertex_fraction": 0.3162689804772234,
+  "other_jelly_max_dent": 0.0,
+  "independent_mesh_data": true,
+  "anchor_world_error": 0.0,
+  "hardness_contact_width": [
+    {
+      "hardness": 16,
+      "affected_fraction": 0.6492407809110629
+    },
+    {
+      "hardness": 75,
+      "affected_fraction": 0.12776572668112798
+    }
+  ],
+  "recovery_max_offset_5s": 0.0,
+  "copy_unchanged_under_other_impulse": 0.0,
+  "passed": true
+}

@@ -1,0 +1,13 @@
+{
+  "minimum_surface_clearance": 0.0013371002674102683,
+  "dent_peak": 0.06440000981092453,
+  "sphere_stayed_front": true,
+  "fixed_cut_error": 0.0,
+  "other_jelly_dent": 0.0,
+  "withdraw_position_error": 0.0,
+  "release_dent_after_4s": 0.0,
+  "anchor_error": 0.0,
+  "same_depth": 0.0,
+  "camera_faces_cut": 1.000000000000007,
+  "passed": true
+}

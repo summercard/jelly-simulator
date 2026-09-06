@@ -1,0 +1,10 @@
+# Blender 自动备份
+*.blend1
+*.blend2
+# Blender 临时
+__pycache__/
+*.pyc
+# Godot 导入中间文件(保留 .import 元数据,排除重生成的 .uid)
+.godot/
+# Mac 临时
+.DS_Store
