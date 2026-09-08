@@ -1,0 +1,13 @@
+{
+  "v007": {
+    "laplacian_rms": 0.0012112630065530539,
+    "cut_error": 0.1180543377995491,
+    "vertices": 4610
+  },
+  "v008": {
+    "laplacian_rms": 0.000538969412446022,
+    "cut_error": 0.0,
+    "vertices": 4610
+  },
+  "roughness_reduction": 0.5550351909286888
+}

@@ -1,0 +1,267 @@
+{
+  "cases": [
+    {
+      "bulge": 0,
+      "depth": 0.36,
+      "hardness": 30,
+      "normal": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "max_inward": 0.3624541759490967,
+      "max_outward": 0.08935072273015976,
+      "volume_ratio": 0.98979752604592,
+      "volume_compensation_amplitude": 0.0,
+      "clearance": 0.0022726058959960938,
+      "fixed_cap_error": 0.0,
+      "other_dent": 0.0,
+      "mean_step_ms": 38.04340972217486
+    },
+    {
+      "bulge": 1,
+      "depth": 0.36,
+      "hardness": 30,
+      "normal": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "max_inward": 0.3624541759490967,
+      "max_outward": 0.10593806207180023,
+      "volume_ratio": 1.0000007596552565,
+      "volume_compensation_amplitude": 0.027852706670016412,
+      "clearance": 0.0022726058959960938,
+      "fixed_cap_error": 0.0,
+      "other_dent": 0.0,
+      "mean_step_ms": 41.76951157779614
+    },
+    {
+      "bulge": 2,
+      "depth": 0.36,
+      "hardness": 30,
+      "normal": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "max_inward": 0.3624541759490967,
+      "max_outward": 0.12555043399333954,
+      "volume_ratio": 1.0102039172990671,
+      "volume_compensation_amplitude": 0.05570541167669166,
+      "clearance": 0.0022726058959960938,
+      "fixed_cap_error": 0.0,
+      "other_dent": 0.0,
+      "mean_step_ms": 41.88389074447009
+    },
+    {
+      "bulge": 1.0,
+      "depth": 0.1,
+      "hardness": 30,
+      "normal": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "max_inward": 0.1025238037109375,
+      "max_outward": 0.07558500021696091,
+      "volume_ratio": 1.0152248587155173,
+      "volume_compensation_amplitude": 0.0,
+      "clearance": 0.0023664236068725586,
+      "fixed_cap_error": 0.0,
+      "other_dent": 0.0,
+      "mean_step_ms": 41.323012955561154
+    },
+    {
+      "bulge": 1.0,
+      "depth": 0.25,
+      "hardness": 30,
+      "normal": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "max_inward": 0.252483606338501,
+      "max_outward": 0.12110809981822968,
+      "volume_ratio": 1.0186998257198911,
+      "volume_compensation_amplitude": 0.0,
+      "clearance": 0.0022153258323669434,
+      "fixed_cap_error": 0.0,
+      "other_dent": 0.0,
+      "mean_step_ms": 40.37034953329971
+    },
+    {
+      "bulge": 1.0,
+      "depth": 0.5,
+      "hardness": 30,
+      "normal": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "max_inward": 0.4609690308570862,
+      "max_outward": 0.14793597161769867,
+      "volume_ratio": 1.0000010635173588,
+      "volume_compensation_amplitude": 0.14559641280620003,
+      "clearance": 0.002272993326187134,
+      "fixed_cap_error": 0.0,
+      "other_dent": 0.0,
+      "mean_step_ms": 44.929837499997426
+    },
+    {
+      "bulge": 1.0,
+      "depth": 3,
+      "hardness": 12,
+      "normal": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "max_inward": 0.5485421419143677,
+      "max_outward": 0.19732853770256042,
+      "volume_ratio": 0.9999786536872984,
+      "volume_compensation_amplitude": 0.2505926511581033,
+      "clearance": 0.0022721588611602783,
+      "fixed_cap_error": 0.0,
+      "other_dent": 0.0,
+      "mean_step_ms": 45.82494906660739
+    },
+    {
+      "bulge": 1.0,
+      "depth": 3,
+      "hardness": 90,
+      "normal": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "max_inward": 0.16872739791870117,
+      "max_outward": 0.10022903233766556,
+      "volume_ratio": 1.020481369226943,
+      "volume_compensation_amplitude": 0.0,
+      "clearance": 0.0023374557495117188,
+      "fixed_cap_error": 0.0,
+      "other_dent": 0.0,
+      "mean_step_ms": 40.56101852216266
+    },
+    {
+      "bulge": 1.0,
+      "depth": 0.36,
+      "hardness": 30,
+      "normal": [
+        0.8762158751487732,
+        0.0,
+        0.4819187521934509
+      ],
+      "max_inward": 0.36217767000198364,
+      "max_outward": 0.1382976621389389,
+      "volume_ratio": 1.0000006077242052,
+      "volume_compensation_amplitude": 0.06948361386395807,
+      "clearance": 0.0016674995422363281,
+      "fixed_cap_error": 0.0,
+      "other_dent": 0.0,
+      "mean_step_ms": 45.67480509997242
+    },
+    {
+      "bulge": 1.0,
+      "depth": 0.36,
+      "hardness": 30,
+      "normal": [
+        -0.8762158751487732,
+        0.0,
+        0.4819187521934509
+      ],
+      "max_inward": 0.36217767000198364,
+      "max_outward": 0.13829760253429413,
+      "volume_ratio": 1.0000005317586795,
+      "volume_compensation_amplitude": 0.06948359283365345,
+      "clearance": 0.0016564726829528809,
+      "fixed_cap_error": 0.0,
+      "other_dent": 0.0,
+      "mean_step_ms": 46.24633843333059
+    },
+    {
+      "bulge": 1.0,
+      "depth": 0.36,
+      "hardness": 30,
+      "normal": [
+        0.0,
+        0.8762158751487732,
+        0.4819187521934509
+      ],
+      "max_inward": 0.36217764019966125,
+      "max_outward": 0.13829779624938965,
+      "volume_ratio": 1.0000006077242052,
+      "volume_compensation_amplitude": 0.0694835541384372,
+      "clearance": 0.0016674399375915527,
+      "fixed_cap_error": 0.0,
+      "other_dent": 0.0,
+      "mean_step_ms": 45.01093703333431
+    },
+    {
+      "bulge": 1.0,
+      "depth": 0.36,
+      "hardness": 30,
+      "normal": [
+        0.0,
+        -0.8762158751487732,
+        0.4819187521934509
+      ],
+      "max_inward": 0.36217764019966125,
+      "max_outward": 0.13829773664474487,
+      "volume_ratio": 1.000000835620782,
+      "volume_compensation_amplitude": 0.06948353841700491,
+      "clearance": 0.0016564130783081055,
+      "fixed_cap_error": 0.0,
+      "other_dent": 0.0,
+      "mean_step_ms": 47.47778611110536
+    },
+    {
+      "bulge": 1.0,
+      "depth": 0.36,
+      "hardness": 30,
+      "normal": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "max_inward": 0.3624541759490967,
+      "max_outward": 0.10593806207180023,
+      "volume_ratio": 1.0000007596552565,
+      "volume_compensation_amplitude": 0.027852706670016412,
+      "clearance": 0.0022726058959960938,
+      "fixed_cap_error": 0.0,
+      "other_dent": 0.0,
+      "mean_step_ms": 45.600498155626056
+    }
+  ],
+  "recovery_after_5s": 0.0,
+  "xyz_target_follow": true,
+  "radius_repeatable": true,
+  "shake_timer": true,
+  "native_handle_takes_over_auto": true,
+  "dynamic_gravity_contacts": [
+    {
+      "tilt": 0,
+      "clearance": 0.001978069543838501,
+      "dent": 0.2807654142379761,
+      "finite": true,
+      "other_unchanged": true
+    },
+    {
+      "tilt": 90,
+      "clearance": 0.0018972456455230713,
+      "dent": 0.25463956594467163,
+      "finite": true,
+      "other_unchanged": true
+    },
+    {
+      "tilt": 180,
+      "clearance": 0.002117633819580078,
+      "dent": 0.25325649976730347,
+      "finite": true,
+      "other_unchanged": true
+    }
+  ],
+  "passed": true
+}

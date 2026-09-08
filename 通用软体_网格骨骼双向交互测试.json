@@ -1,0 +1,16 @@
+{
+  "box": {
+    "max_deformation": 0.30318560787052423,
+    "penetrating_vertices": 0,
+    "mean_step_ms": 8.161523360176943
+  },
+  "shape_key_surface_updates": true,
+  "armature_contact": true,
+  "recovery": 0.0021006865780885987,
+  "soft_soft": {
+    "first": 0.2399332785142541,
+    "second": 0.07050815841247701
+  },
+  "panel_draw": true,
+  "passed": true
+}

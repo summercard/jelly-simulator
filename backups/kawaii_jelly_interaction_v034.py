@@ -1,4 +1,4 @@
-bl_info={'name':'Q弹果冻 · 重力与固定切面','author':'Codex','version':(4,2,1),'blender':(4,2,0),'location':'3D视图 > N侧栏 > Q弹果冻','description':'固定切面、重力下垂、抓拉快甩、摇晃与硬软调节','category':'3D View'}
+bl_info={'name':'Q弹果冻 · 重力与固定切面','author':'Codex','version':(3,4,0),'blender':(4,2,0),'location':'3D视图 > N侧栏 > Q弹果冻','description':'固定切面、重力下垂、抓拉快甩、摇晃与硬软调节','category':'3D View'}
 import bpy,math,time
 import numpy as np
 from mathutils import Vector
@@ -43,70 +43,6 @@ def finger_size_changed(self,context):
         radius=float(ball.get('jelly_radius',.23))
         ball.scale=(self.jelly_ball_radius/radius,)*3
     parameter_changed(self,context)
-
-
-def setup_plates(scene):
-    for root in anchors(scene):
-        for obj in list(root.children):
-            if obj.type=='MESH' and not obj.get('jelly_deform') and ('托盘' in obj.name or obj.get('jelly_plate')):
-                world=obj.matrix_world.copy();obj.parent=None;obj.matrix_world=world
-                obj['jelly_plate']=True;obj['jelly_plate_root']=root.name;obj['jelly_collider']=False
-                obj.lock_location=(False,)*3;obj.lock_rotation=(False,)*3
-                obj['jelly_plate_last']=list(np.array(world).ravel())
-                obj['操作']='移动此托盘，会带着整个果冻移动；托盘不参与碰撞'
-
-def sync_plates(scene):
-    bpy.context.view_layer.update()
-    for obj in scene.objects:
-        if obj.get('jelly_plate'):
-            root=scene.objects.get(obj.get('jelly_plate_root',''))
-            if root is None:continue
-            previous=np.array(obj.get('jelly_plate_last',list(np.array(obj.matrix_world).ravel()))).reshape(4,4)
-            plate=np.array(obj.matrix_world);base=np.array(root.matrix_world)
-            if np.max(np.abs(plate-previous))<1e-6 and np.max(np.abs(base-previous))>1e-6:
-                obj.matrix_world=root.matrix_world.copy()
-            else:
-                # Two rigid fixed cut disks cannot occupy the same plane/area.
-                # Their jelly boundary (not the larger plate rim) limits dragging.
-                candidate=obj.matrix_world.copy();normal=candidate.to_3x3().normalized()@Vector((0,0,1))
-                if not root.get('jelly_custom_soft'):
-                    for other in anchors(scene):
-                        if other==root or other.get('jelly_custom_soft'):continue
-                        other_normal=other.matrix_world.to_3x3().normalized()@Vector((0,0,1))
-                        delta=candidate.translation-other.matrix_world.translation
-                        lateral=delta-normal*delta.dot(normal)
-                        if abs(normal.dot(other_normal))>.995 and abs(delta.dot(normal))<.025 and lateral.length<2.002:
-                            old=Vector(previous[:3,3])-other.matrix_world.translation
-                            old-=normal*old.dot(normal)
-                            direction=old.normalized() if old.dot(lateral)<0 or lateral.length<1e-6 else lateral.normalized()
-                            if direction.length<1e-6:direction=Vector((1,0,0))
-                            candidate.translation=other.matrix_world.translation+normal*delta.dot(normal)+direction*2.002
-                    obj.matrix_world=candidate
-                root.matrix_world=obj.matrix_world.copy()
-            obj['jelly_plate_last']=list(np.array(obj.matrix_world).ravel())
-    bpy.context.view_layer.update()
-
-class JELLY_OT_select_plate(bpy.types.Operator):
-    bl_idname='jelly.select_plate';bl_label='移动当前盘子和果冻'
-    def execute(self,context):
-        if _MODAL:_MODAL.finish(context)
-        setup_plates(context.scene)
-        obj=next((o for o in context.scene.objects if o.get('jelly_plate_root')==anchor(context.scene).name),None)
-        if obj is None:return {'CANCELLED'}
-        for selected in context.selected_objects:selected.select_set(False)
-        obj.select_set(True);context.view_layer.objects.active=obj
-        if context.area and context.area.type=='VIEW_3D':
-            context.space_data.show_gizmo=True;context.space_data.show_gizmo_object_translate=True
-            bpy.ops.wm.tool_set_by_id(name='builtin.move')
-        wake(context.scene);return {'FINISHED'}
-
-def squeeze_changed(self,context):
-    if _UPDATING:return
-    for obj in self.objects:
-        side=obj.get('jelly_squeeze_side')
-        if side is not None:
-            obj.location.x=float(obj['jelly_squeeze_home'])-float(side)*self.jelly_squeeze
-    wake(self)
 
 
 def rotation(scene):
@@ -226,9 +162,6 @@ def position_finger(scene):
     ball=finger(scene);root=anchor(scene)
     if not ball or not root:return
     ctx=finger_context(scene)
-    tool=active_tool(scene)
-    if tool and tool.get('jelly_last_location') is not None and (tool.location-Vector(tool['jelly_last_location'])).length>.0001:
-        scene.jelly_finger_auto=False;ctx['desired']=tool.location+tool_offset(scene,tool);sync_handle(scene,ctx['desired'])
     handle=finger_handle(scene)
     if scene.jelly_finger_auto and ctx['auto'] and handle is not None and (handle.location-ctx['desired']).length>.0001:
         scene.jelly_finger_auto=False
@@ -276,13 +209,6 @@ def prepare_finger_contacts(scene,states):
         max_indent=min(.65,radius*(.35+.80*(90-scene.jelly_k)/78)*scene.jelly_compression)
         depth=min(requested,max_indent)
         effective=near+n*(radius-depth)
-        if not st['anchor'].get('jelly_custom_soft'):
-            # Protect the disk and a small collar. Collision projects the tool,
-            # never the cap; radius test also covers side-on approaches.
-            radial=math.hypot(effective.x,effective.y)
-            if radial<1+radius and effective.z<radius+.015:
-                effective.z=radius+.015
-                depth=max(0,radius-(effective-near).dot(n))
         st['pressure_center']=np.array(effective)
         st['pressure_normal']=np.array(n)
         st['pressure_depth']=depth
@@ -323,8 +249,6 @@ def resolve_solid_finger(scene,states):
 def move_finger(scene,position):
     ctx=finger_context(scene);ctx['desired']=Vector(position);scene.jelly_finger_auto=False
     sync_handle(scene,position)
-    if scene.jelly_surface_mode:
-        prepare_finger_contacts(scene,all_states(scene));finger(scene).location=ctx['candidate'];ctx['last']=ctx['candidate'].copy();sync_active_tool(scene);wake(scene);return
     states=all_states(scene);prepare_finger_contacts(scene,states)
     for st in states:update_dents(st,1/60);apply_state(st,True)
     resolve_solid_finger(scene,states)
@@ -477,7 +401,7 @@ def tick():
     global _STATE
     if not _STATE or not _STATE['alive']:return None
     try:
-        scene=_STATE['scene'];sync_plates(scene);now=time.perf_counter()
+        scene=_STATE['scene'];now=time.perf_counter()
         if not scene.jelly_running:return .06
         states=all_states(scene);position_finger(scene);idle=True
         for st in states:
@@ -488,17 +412,6 @@ def tick():
                 st['shake_phase']+=dt;env=1 if scene.jelly_continuous_shake and current else min(1,max(0,(st['shake_until']-now)/.4))
                 external+=local_vector(scene,(18*math.sin(st['shake_phase']*8.7),7*math.cos(st['shake_phase']*7.1),0))*scene.jelly_shake_strength*env
             integrate(st,dt,force=external)
-        if scene.jelly_surface_mode:
-            import jelly_surface_solver,sys
-            ball=finger(scene)
-            if ball:
-                # Same depth/stiffness limit in native and general contact modes.
-                prepare_finger_contacts(scene,states)
-                ctx=finger_context(scene);ball.location=ctx['candidate'];ctx['last']=ball.location.copy()
-                sync_active_tool(scene)
-            bpy.context.view_layer.update()
-            jelly_surface_solver.step(scene,states,min(.05,max(st['step_dt'] for st in states)),sys.modules[__name__])
-            return 1/60
         prepare_finger_contacts(scene,states)
         for st in states:
             was_dent=st['dent_active'];update_dents(st,st['step_dt']);apply_state(st,was_dent)
@@ -514,17 +427,8 @@ def wake(scene=None):
     return s
 
 def settle(scene=None):
-    s=state(scene);s.pop('surface_solver',None); s['q'][:]=equilibrium(s['scene']);s['v'][:]=0;s['r']=s['rv']=0;s['target']=None;s['demo']=False;s['shake_until']=0
+    s=state(scene);s['q'][:]=equilibrium(s['scene']);s['v'][:]=0;s['r']=s['rv']=0;s['target']=None;s['demo']=False;s['shake_until']=0
     s['scene'].jelly_continuous_shake=False;apply_state(s,True);return s
-
-def surface_mode_changed(self,context):
-    for st in _STATES.values():st.pop('surface_solver',None)
-    parameter_changed(self,context)
-
-def press_depth_changed(self,context):
-    if _UPDATING:return
-    self.jelly_finger_auto=True;self.jelly_press=True
-    wake(self)
 
 def parameter_changed(self,context):
     if not _UPDATING and any(o.get('jelly_body') for o in self.objects):wake(self)
@@ -723,141 +627,11 @@ class JELLY_OT_clone(bpy.types.Operator):
             clone=obj.copy();clone.data=obj.data.copy();clone.name=obj.name+'_副本%02d'%n;coll.objects.link(clone);clone.parent=new;clone.matrix_parent_inverse=Matrix.Identity(4)
             if clone.get('jelly_deform'):
                 attr=clone.data.attributes.get('jelly_rest');arr=np.empty(len(clone.data.vertices)*3,dtype=np.float32);attr.data.foreach_get('vector',arr);clone.data.vertices.foreach_set('co',arr);clone.data.update()
-        plate=next((o for o in scene.objects if o.get('jelly_plate_root')==source.name),None)
-        if plate:
-            copy=plate.copy();copy.data=plate.data.copy();scene.collection.objects.link(copy)
-            copy.name=plate.name+'_副本%02d'%n;copy['jelly_plate_root']=new.name
-            copy.matrix_world=new.matrix_world.copy();copy['jelly_plate_last']=list(np.array(copy.matrix_world).ravel())
         scene.jelly_active=n;bpy.context.view_layer.update();settle(scene);wake(scene);position_finger(scene)
         cam=scene.camera
         if cam:
             fit_front_camera(scene)
         return {'FINISHED'}
-
-def active_tool(scene):
-    return next((o for o in scene.objects if o.get('jelly_tool_active')),None)
-
-def tool_offset(scene,tool):
-    thickness={'HAND':.14,'BOX':.25,'OVAL':.3}.get(tool.get('jelly_tool_kind'),scene.jelly_ball_radius)
-    return tool.matrix_world.to_3x3().normalized()@Vector((0,0,scene.jelly_ball_radius-thickness))
-
-def sync_active_tool(scene):
-    tool=active_tool(scene);ball=finger(scene)
-    if tool and ball:
-        tool.location=ball.location-tool_offset(scene,tool)
-        tool['jelly_last_location']=list(tool.location)
-
-def activate_tool(scene,tool):
-    ball=finger(scene)
-    for root in scene.objects:
-        if root.get('jelly_tool_kind'):
-            enabled=root==tool;root['jelly_tool_active']=enabled
-            for obj in [root]+list(root.children):
-                obj.hide_viewport=not enabled;obj.hide_render=not enabled
-                if obj.type=='MESH':obj['jelly_collider']=enabled
-    ball.hide_viewport=tool is not None;ball.hide_render=tool is not None
-    sync_active_tool(scene)
-    for obj in bpy.context.selected_objects:obj.select_set(False)
-    selected=tool or ball
-    selected.hide_set(False);selected.select_set(True);bpy.context.view_layer.objects.active=selected
-    scene.jelly_finger_auto=True;scene.jelly_press=False
-    for st in all_states(scene):st.pop('surface_solver',None)
-    import jelly_surface_solver
-    jelly_surface_solver._COLLIDER_HISTORY.clear()
-    jelly_surface_solver._COLLIDER_CACHE.clear()
-
-
-class JELLY_OT_demo_shape(bpy.types.Operator):
-    bl_idname='jelly.demo_shape';bl_label='一键替换交互形状'
-    shape:EnumProperty(items=[('SPHERE','球体',''),('BOX','圆角方块',''),('OVAL','椭球',''),('HAND','骨骼手掌示例','')],default='BOX')
-    def execute(self,context):
-        from mathutils import Matrix
-        scene=context.scene;a=anchor(scene)
-        if _MODAL:_MODAL.finish(context)
-        if self.shape=='SPHERE':
-            activate_tool(scene,None);wake(scene);return {'FINISHED'}
-        existing=next((o for o in scene.objects if o.get('jelly_tool_kind')==self.shape),None)
-        if existing:
-            activate_tool(scene,existing);wake(scene);return {'FINISHED'}
-        location=a.matrix_world@Vector((0,0,1.35))
-        if self.shape=='HAND':
-            bpy.ops.object.armature_add(location=location)
-            rig=context.object;rig.name='交互手掌_骨骼示例'
-            rig.matrix_world=a.matrix_world@Matrix.Translation((0,0,1.35))
-            bpy.ops.object.mode_set(mode='EDIT');rig.data.edit_bones.remove(rig.data.edit_bones[0])
-            palm=rig.data.edit_bones.new('掌心');palm.head=(0,-.3,0);palm.tail=(0,.15,0)
-            for i in range(5):
-                x=(i-2)*.22
-                b=rig.data.edit_bones.new('手指%d'%i);b.head=(x,.1,0);b.tail=(x,.65,0);b.parent=palm
-            bpy.ops.object.mode_set(mode='OBJECT')
-            pieces=[('掌心',(0,-.08,0),(.56,.33,.14))]+[('手指%d'%i,((i-2)*.22,.46,0),(.105,.38,.11)) for i in range(5)]
-            for bone,centre,scale in pieces:
-                bpy.ops.mesh.primitive_uv_sphere_add(segments=20,ring_count=12)
-                obj=context.object;obj.name='手掌碰撞_'+bone
-                for v in obj.data.vertices:
-                    v.co=Vector((v.co.x*scale[0]+centre[0],v.co.y*scale[1]+centre[1],v.co.z*scale[2]+centre[2]))
-                obj.parent=rig;obj.matrix_basis=Matrix.Identity(4)
-                obj['jelly_collider']=True
-                group=obj.vertex_groups.new(name=bone);group.add(list(range(len(obj.data.vertices))),1.,'REPLACE')
-                modifier=obj.modifiers.new('骨骼表面变形','ARMATURE');modifier.object=rig
-                for face in obj.data.polygons:face.use_smooth=True
-            rig['jelly_hand_demo']=True
-            context.view_layer.objects.active=rig
-            for obj in context.selected_objects:obj.select_set(False)
-            rig.select_set(True)
-        else:
-            if self.shape=='BOX':
-                bpy.ops.mesh.primitive_cube_add(size=1,location=location)
-                obj=context.object;obj.scale=(.8,.65,.5)
-                bevel=obj.modifiers.new('圆角','BEVEL');bevel.width=.12;bevel.segments=4
-            else:
-                bpy.ops.mesh.primitive_uv_sphere_add(segments=32,ring_count=20,location=location)
-                obj=context.object;obj.scale=(.55,.25,.3)
-            obj.rotation_euler=a.rotation_euler;obj.name='交互_'+self.shape;obj['jelly_collider']=True
-        root=rig if self.shape=='HAND' else obj
-        root['jelly_tool_kind']=self.shape
-        activate_tool(scene,root)
-        scene.jelly_surface_mode=True;wake(scene);return {'FINISHED'}
-
-def hand_curl_changed(self,context):
-    for rig in self.objects:
-        if rig.type=='ARMATURE' and rig.get('jelly_hand_demo'):
-            for bone in rig.pose.bones:
-                if bone.name.startswith('手指'):
-                    bone.rotation_mode='XYZ';bone.rotation_euler.x=-math.radians(self.jelly_hand_curl)
-    parameter_changed(self,context)
-
-
-class JELLY_OT_collider(bpy.types.Operator):
-    bl_idname='jelly.collider';bl_label='选中网格设为交互物体'
-    remove:BoolProperty(default=False)
-    def execute(self,context):
-        meshes=[o for o in context.selected_objects if o.type=='MESH' and not o.get('jelly_deform')]
-        if not meshes:self.report({'WARNING'},'请选择封闭的网格物体');return {'CANCELLED'}
-        for obj in meshes:obj['jelly_collider']=not self.remove
-        if not self.remove:context.scene.jelly_surface_mode=True
-        wake(context.scene);return {'FINISHED'}
-
-class JELLY_OT_soft_mesh(bpy.types.Operator):
-    bl_idname='jelly.soft_mesh';bl_label='选中网格设为软物体'
-    def execute(self,context):
-        from mathutils import Matrix
-        obj=context.object
-        if not obj or obj.type!='MESH' or obj.get('jelly_deform'):
-            self.report({'WARNING'},'请选择独立的封闭网格');return {'CANCELLED'}
-        if len(anchors(context.scene))>=6:
-            self.report({'WARNING'},'最多6个软物体');return {'CANCELLED'}
-        if obj.modifiers or obj.parent:
-            self.report({'WARNING'},'软物体请先应用修改器并解除父级；骨骼模型请设为交互物体');return {'CANCELLED'}
-        scene=context.scene;n=max([a.get('jelly_instance_id',1) for a in anchors(scene)]+[0])+1
-        root=bpy.data.objects.new('软物体基座_%02d'%n,None);scene.collection.objects.link(root)
-        root.matrix_world=obj.matrix_world.copy();root['jelly_anchor']=True;root['jelly_custom_soft']=True;root['jelly_instance_id']=n
-        obj.data=obj.data.copy();obj.parent=root;obj.matrix_parent_inverse=Matrix.Identity(4);obj.matrix_basis=Matrix.Identity(4)
-        obj['jelly_body']=True;obj['jelly_deform']=True;obj['jelly_collider']=False
-        attr=obj.data.attributes.get('jelly_rest') or obj.data.attributes.new('jelly_rest','FLOAT_VECTOR','POINT')
-        values=np.empty(len(obj.data.vertices)*3,dtype=np.float32);obj.data.vertices.foreach_get('co',values);attr.data.foreach_set('vector',values)
-        scene.jelly_surface_mode=True;wake(scene);return {'FINISHED'}
-
 
 class JELLY_PT_panel(bpy.types.Panel):
     bl_label='Q弹果冻 · 重力实验台';bl_idname='JELLY_PT_panel';bl_space_type='VIEW_3D';bl_region_type='UI';bl_category='Q弹果冻'
@@ -866,8 +640,6 @@ class JELLY_PT_panel(bpy.types.Panel):
     def draw(self,context):
         l=self.layout;s=context.scene
         l.prop(s,'jelly_active');l.operator('jelly.clone',icon='DUPLICATE')
-        l.operator('jelly.select_plate',icon='EMPTY_AXIS')
-        l.prop(s,'jelly_squeeze',slider=True)
         row=l.row();row.scale_y=1.3;row.operator('jelly.grab',icon='HAND')
         l.label(text='左键抓拉 / 快甩，松手回弹');l.label(text='右键或 Esc 退出抓拉')
         box=l.box();box.label(text='1. 固定切面朝向',icon='LOCKED');r=box.row(align=True)
@@ -877,18 +649,6 @@ class JELLY_PT_panel(bpy.types.Panel):
         r=box.row(align=True)
         for key,label in [('FIRM','偏硬'),('BOUNCY','Q弹'),('SOFT','软糯')]:r.operator('jelly.preset',text=label).preset=key
         box.prop(s,'jelly_k',slider=True);box.prop(s,'jelly_damp',slider=True);box.label(text='硬度越小，下垂越大')
-        box=l.box();box.label(text='通用表面交互')
-        box.prop(s,'jelly_surface_mode')
-        row=box.row(align=True)
-        for shape,label in [('SPHERE','球体'),('BOX','方块'),('OVAL','椭球'),('HAND','骨骼手')]:
-            row.operator('jelly.demo_shape',text=label).shape=shape
-        box.prop(s,'jelly_hand_curl',slider=True)
-        box.operator('jelly.collider')
-        op=box.operator('jelly.collider',text='移除选中物体的交互');op.remove=True
-        box.operator('jelly.soft_mesh')
-        box.prop(s,'jelly_solver_iterations')
-        box.label(text='支持骨骼 / 形态键变形后的封闭表面')
-        box.label(text='软物体之间双向挤压；抓拉与回弹保留')
         box=l.box();box.label(text='3. 球体三轴与体积挤压')
         box.operator('jelly.control_ball',icon='EMPTY_AXIS')
         handle=finger_handle(s)
@@ -907,7 +667,7 @@ class JELLY_PT_panel(bpy.types.Panel):
         box.prop(s,'jelly_compression',slider=True)
         box.prop(s,'jelly_bulge',slider=True);box.prop(s,'jelly_bulge_spread',slider=True)
         box.label(text='鼓出 1 = 补偿压掉体积；>1 加强鼓包')
-        box.label(text='替换后共用三轴控制柄与压入参数')
+        box.label(text='十字是目标，实体球碰到果冻会受阻')
         box=l.box();box.label(text='4. 摇晃与回弹');r=box.row(align=True);r.operator('jelly.poke');r.operator('jelly.squash')
         box.operator('jelly.shake',icon='FORCE_HARMONIC');box.prop(s,'jelly_continuous_shake');box.prop(s,'jelly_shake_strength',slider=True)
         box.operator('jelly.settle',icon='LOOP_BACK');box.prop(s,'jelly_running',toggle=True)
@@ -917,10 +677,6 @@ class JELLY_PT_panel(bpy.types.Panel):
 
 @persistent
 def before_load(_):
-    import sys
-    if 'jelly_surface_solver' in sys.modules:
-        sys.modules['jelly_surface_solver']._COLLIDER_HISTORY.clear()
-        sys.modules['jelly_surface_solver']._COLLIDER_CACHE.clear()
     global _STATE,_MODAL
     for st in _STATES.values():st['alive']=False
     _STATES.clear()
@@ -931,19 +687,14 @@ def before_load(_):
 def after_load(_):
     if any(o.get('jelly_body') for o in bpy.context.scene.objects):
         scene=bpy.context.scene
-        setup_plates(scene)
         finger_handle(scene,True);finger_size_changed(scene,bpy.context)
         for st in all_states(scene):st['q'][:]=equilibrium(scene);apply_state(st,True)
         wake(scene)
 
-_CLASSES=(JELLY_OT_select_plate,JELLY_OT_grab,JELLY_OT_poke,JELLY_OT_squash,JELLY_OT_shake,JELLY_OT_settle,JELLY_OT_pose,JELLY_OT_preset,JELLY_OT_finger_home,JELLY_OT_control_ball,JELLY_OT_ball_step,JELLY_OT_clone,JELLY_OT_demo_shape,JELLY_OT_collider,JELLY_OT_soft_mesh,JELLY_PT_panel)
-_PROPS=('jelly_k','jelly_damp','jelly_g','jelly_gravity','jelly_tilt','jelly_shake_strength','jelly_continuous_shake','jelly_running','jelly_active','jelly_finger_auto','jelly_press','jelly_press_depth','jelly_ball_radius','jelly_compression','jelly_bulge','jelly_bulge_spread','jelly_move_step','jelly_surface_mode','jelly_solver_iterations','jelly_hand_curl','jelly_squeeze')
+_CLASSES=(JELLY_OT_grab,JELLY_OT_poke,JELLY_OT_squash,JELLY_OT_shake,JELLY_OT_settle,JELLY_OT_pose,JELLY_OT_preset,JELLY_OT_finger_home,JELLY_OT_control_ball,JELLY_OT_ball_step,JELLY_OT_clone,JELLY_PT_panel)
+_PROPS=('jelly_k','jelly_damp','jelly_g','jelly_gravity','jelly_tilt','jelly_shake_strength','jelly_continuous_shake','jelly_running','jelly_active','jelly_finger_auto','jelly_press','jelly_press_depth','jelly_ball_radius','jelly_compression','jelly_bulge','jelly_bulge_spread','jelly_move_step')
 def register():
     for cls in _CLASSES:bpy.utils.register_class(cls)
-    bpy.types.Scene.jelly_squeeze=FloatProperty(name='两侧方块向中间挤压',default=0,min=0,max=.7,update=squeeze_changed)
-    bpy.types.Scene.jelly_hand_curl=FloatProperty(name='示例手指弯曲',default=0,min=0,max=80,update=hand_curl_changed)
-    bpy.types.Scene.jelly_surface_mode=BoolProperty(name='通用软体表面求解',default=False,update=surface_mode_changed)
-    bpy.types.Scene.jelly_solver_iterations=IntProperty(name='接触迭代次数',default=4,min=2,max=12)
     bpy.types.Scene.jelly_ball_radius=FloatProperty(name='球体半径',default=.38,min=.12,max=.65,update=finger_size_changed)
     bpy.types.Scene.jelly_compression=FloatProperty(name='可压入程度',default=1.25,min=.2,max=2.,update=parameter_changed)
     bpy.types.Scene.jelly_bulge=FloatProperty(name='体积鼓出程度',default=1.,min=0,max=2.,update=parameter_changed)
@@ -952,7 +703,7 @@ def register():
     bpy.types.Scene.jelly_active=IntProperty(name='当前果冻编号',default=1,min=1,max=6,update=active_changed)
     bpy.types.Scene.jelly_finger_auto=BoolProperty(name='手指跟随当前果冻',default=True)
     bpy.types.Scene.jelly_press=BoolProperty(name='按下球体 / 松开',default=False,update=finger_press_changed)
-    bpy.types.Scene.jelly_press_depth=FloatProperty(name='挤压深度',default=.36,min=0,max=.65,update=press_depth_changed)
+    bpy.types.Scene.jelly_press_depth=FloatProperty(name='挤压深度',default=.36,min=0,max=.65,update=parameter_changed)
     bpy.types.Scene.jelly_k=FloatProperty(name='硬度（越小越软）',default=30,min=12,max=90,update=parameter_changed)
     bpy.types.Scene.jelly_damp=FloatProperty(name='阻尼（越小余晃越久）',default=2.2,min=.6,max=10,update=parameter_changed)
     bpy.types.Scene.jelly_g=FloatProperty(name='重力倍率',default=1,min=0,max=2,update=parameter_changed)

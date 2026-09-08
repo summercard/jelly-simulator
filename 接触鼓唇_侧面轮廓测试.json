@@ -1,0 +1,26 @@
+{
+  "passed": true,
+  "cases": [
+    {
+      "depth": 0.15,
+      "contact_rim_rise": 0.024064212942100743,
+      "peak_distance_from_axis": 0.5255297548783423,
+      "far_surface_rise": 1.3170187106646792e-05,
+      "volume_ratio": 1.0
+    },
+    {
+      "depth": 0.36,
+      "contact_rim_rise": 0.10832156814537412,
+      "peak_distance_from_axis": 0.5255297554688264,
+      "far_surface_rise": 0.0004586628292216857,
+      "volume_ratio": 1.0000007596553717
+    },
+    {
+      "depth": 0.5,
+      "contact_rim_rise": 0.15646595484171405,
+      "peak_distance_from_axis": 0.527493181458117,
+      "far_surface_rise": 0.0010604552968941203,
+      "volume_ratio": 1.0000008356209087
+    }
+  ]
+}

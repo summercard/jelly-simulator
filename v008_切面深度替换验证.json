@@ -1,0 +1,36 @@
+{
+  "cases": [
+    {
+      "normal": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "cut_error": 0.0,
+      "max_displacement": 0.30278491973876953
+    },
+    {
+      "normal": [
+        0.9798040390014648,
+        0.0,
+        0.19996000826358795
+      ],
+      "cut_error": 0.0,
+      "max_displacement": 0.39809367060661316
+    },
+    {
+      "normal": [
+        0.6000000238418579,
+        0.0,
+        0.800000011920929
+      ],
+      "cut_error": 0.0,
+      "max_displacement": 0.4596913158893585
+    }
+  ],
+  "render_vertices": 4610,
+  "depth_position_difference": 0.2671299423000274,
+  "compression_position_difference": 0.47689992227617467,
+  "replacement_reuses_hand": true,
+  "passed": true
+}

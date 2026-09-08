@@ -1,0 +1,18 @@
+{
+  "plate_carries_whole_mesh_error": 1.192092966562086e-07,
+  "plate_is_not_collider": true,
+  "cap_overlap_guard": true,
+  "hardness": [
+    {
+      "hardness": 16,
+      "pressed": 0.4320449707800534,
+      "residual_after_quarter_second": 0.1510482443593663
+    },
+    {
+      "hardness": 75,
+      "pressed": 0.42856291570407185,
+      "residual_after_quarter_second": 0.08949965791220724
+    }
+  ],
+  "passed": true
+}

@@ -1,4 +1,4 @@
-bl_info={'name':'Q弹果冻 · 重力与固定切面','author':'Codex','version':(4,2,1),'blender':(4,2,0),'location':'3D视图 > N侧栏 > Q弹果冻','description':'固定切面、重力下垂、抓拉快甩、摇晃与硬软调节','category':'3D View'}
+bl_info={'name':'Q弹果冻 · 重力与固定切面','author':'Codex','version':(4,2,0),'blender':(4,2,0),'location':'3D视图 > N侧栏 > Q弹果冻','description':'固定切面、重力下垂、抓拉快甩、摇晃与硬软调节','category':'3D View'}
 import bpy,math,time
 import numpy as np
 from mathutils import Vector
@@ -764,7 +764,6 @@ def activate_tool(scene,tool):
     for st in all_states(scene):st.pop('surface_solver',None)
     import jelly_surface_solver
     jelly_surface_solver._COLLIDER_HISTORY.clear()
-    jelly_surface_solver._COLLIDER_CACHE.clear()
 
 
 class JELLY_OT_demo_shape(bpy.types.Operator):
@@ -866,7 +865,7 @@ class JELLY_PT_panel(bpy.types.Panel):
     def draw(self,context):
         l=self.layout;s=context.scene
         l.prop(s,'jelly_active');l.operator('jelly.clone',icon='DUPLICATE')
-        l.operator('jelly.select_plate',icon='EMPTY_AXIS')
+        l.operator('jelly.select_plate',icon='TRANSFORM_MOVE')
         l.prop(s,'jelly_squeeze',slider=True)
         row=l.row();row.scale_y=1.3;row.operator('jelly.grab',icon='HAND')
         l.label(text='左键抓拉 / 快甩，松手回弹');l.label(text='右键或 Esc 退出抓拉')
@@ -918,9 +917,7 @@ class JELLY_PT_panel(bpy.types.Panel):
 @persistent
 def before_load(_):
     import sys
-    if 'jelly_surface_solver' in sys.modules:
-        sys.modules['jelly_surface_solver']._COLLIDER_HISTORY.clear()
-        sys.modules['jelly_surface_solver']._COLLIDER_CACHE.clear()
+    if 'jelly_surface_solver' in sys.modules:sys.modules['jelly_surface_solver']._COLLIDER_HISTORY.clear()
     global _STATE,_MODAL
     for st in _STATES.values():st['alive']=False
     _STATES.clear()

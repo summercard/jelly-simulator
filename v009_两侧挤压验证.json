@@ -1,0 +1,25 @@
+{
+  "step_ms": 99.68356473859436,
+  "bodies": [
+    {
+      "dent": 0.4586315070216622,
+      "contacts": 806,
+      "soft_contacts": 260
+    },
+    {
+      "dent": 0.4594978967554002,
+      "contacts": 782,
+      "soft_contacts": 260
+    }
+  ],
+  "render_penetration": [
+    {
+      "max": 0,
+      "count": 0
+    },
+    {
+      "max": 0,
+      "count": 0
+    }
+  ]
+}

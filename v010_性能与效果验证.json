@@ -1,0 +1,11 @@
+{
+  "before": {
+    "mean_ms": 93.76144725001723,
+    "median_ms": 102.1380624952144
+  },
+  "after": {
+    "mean_ms": 76.12124740694526,
+    "median_ms": 82.05608350544935
+  },
+  "max_vertex_coordinate_difference": 0.0
+}
